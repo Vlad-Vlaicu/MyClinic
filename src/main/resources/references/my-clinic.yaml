@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: My Clinic
+  description: My Clinic APIs
+  version: 1.0.0
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/my-clinic/login:
+    post:
+      summary: Receive Login Request
+      description: This API provides the login request
+      operationId: login
+      tags:
+        - my-clinic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic/register:
+    post:
+      summary: Create a new user account
+      description: This API is called to create a new User account
+      operationId: registerUser
+      tags:
+        - my-clinic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/admin/addEmployee:
+    post:
+      summary: Create a new employee account
+      description: This API is called to add a new Employee account
+      operationId: addEmployee
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        201:
+          description: created
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic/getAccountInfo:
+    get:
+      summary: Get account info
+      description: This API is called to retrieve account info
+      operationId: getAccountData
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfo'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      description: Login user data
+      properties:
+        email:
+          type: string
+          description: User's email
+          example: email@email.com
+        password:
+          type: string
+          description: User's password
+          example: admin1234
+
+    RegisterRequest:
+      type: object
+      description: Register new user data
+      properties:
+        name:
+          type: string
+          description: User's name
+          example: Vlad
+        email:
+          type: string
+          description: User's email
+          example: email@email.com
+        password:
+          type: string
+          description: User's password
+          example: admin1234
+
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: number
+
+    AccountInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        creation_date:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: error code
+          example: TECHNICAL_ERROR
+        message:
+          type: string
+          description: Free-form text message describing the error condition
+          example: Input parameters validation failed
+
+  responses:
+    ClientError:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
