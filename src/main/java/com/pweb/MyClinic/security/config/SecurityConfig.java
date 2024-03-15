@@ -35,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/v1/login").permitAll()
+                        .requestMatchers("/api/v1/my-clinic/login").permitAll()
                         .requestMatchers("/api/v1/welcome").permitAll()
                         .requestMatchers("/api/v1/create_admin").permitAll()
                         .anyRequest().authenticated())
