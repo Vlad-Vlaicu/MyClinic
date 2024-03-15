@@ -36,8 +36,7 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/v1/my-clinic/login").permitAll()
-                        .requestMatchers("/api/v1/welcome").permitAll()
-                        .requestMatchers("/api/v1/create_admin").permitAll()
+                        .requestMatchers("/api/v1/my-clinic/register").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
