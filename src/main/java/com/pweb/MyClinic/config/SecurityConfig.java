@@ -1,6 +1,6 @@
-package com.pweb.MyClinic.security.config;
+package com.pweb.MyClinic.config;
 
-import com.pweb.MyClinic.security.service.UserService;
+import com.pweb.MyClinic.service.security.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

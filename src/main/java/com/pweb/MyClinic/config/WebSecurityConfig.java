@@ -1,4 +1,4 @@
-package com.pweb.MyClinic.security.config;
+package com.pweb.MyClinic.config;
 
 import com.pweb.MyClinic.config.properties.JwtProperties;
 import lombok.RequiredArgsConstructor;

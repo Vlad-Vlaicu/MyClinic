@@ -1,4 +1,4 @@
-package com.pweb.MyClinic.security.model;
+package com.pweb.MyClinic.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

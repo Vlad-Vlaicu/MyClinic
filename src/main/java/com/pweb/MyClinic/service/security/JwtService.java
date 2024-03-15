@@ -1,23 +1,20 @@
-package com.pweb.MyClinic.security.service;
+package com.pweb.MyClinic.service.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.pweb.MyClinic.config.properties.JwtProperties;
-import com.pweb.MyClinic.security.model.User;
-import io.jsonwebtoken.Claims;
+import com.pweb.MyClinic.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
 
 @Service
 @Slf4j

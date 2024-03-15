@@ -1,8 +1,8 @@
 package com.pweb.MyClinic.service.workflow;
 
-import com.pweb.MyClinic.security.model.User;
-import com.pweb.MyClinic.security.service.JwtService;
-import com.pweb.MyClinic.security.service.UserService;
+import com.pweb.MyClinic.model.User;
+import com.pweb.MyClinic.service.security.JwtService;
+import com.pweb.MyClinic.service.security.UserService;
 import com.pweb.MyClinic.service.exception.ServiceException;
 import com.pweb.model.generated.AuthResponse;
 import com.pweb.model.generated.LoginRequest;
@@ -13,7 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import static com.pweb.MyClinic.security.model.Role.USER;
+import static com.pweb.MyClinic.model.Role.USER;
 import static com.pweb.MyClinic.service.error.ServiceError.LOGIN_FAILED;
 import static com.pweb.MyClinic.service.error.ServiceError.REGISTER_FAILED;
 

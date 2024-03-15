@@ -1,15 +1,14 @@
-package com.pweb.MyClinic.security.config;
+package com.pweb.MyClinic.config;
 
-import com.pweb.MyClinic.security.model.User;
-import com.pweb.MyClinic.security.service.JwtService;
-import com.pweb.MyClinic.security.service.UserService;
+import com.pweb.MyClinic.model.User;
+import com.pweb.MyClinic.service.security.JwtService;
+import com.pweb.MyClinic.service.security.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -22,14 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
     private final JwtService jwtService;
-    private UserService userService;
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(
