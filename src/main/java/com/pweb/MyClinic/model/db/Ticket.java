@@ -1,9 +1,7 @@
 package com.pweb.MyClinic.model.db;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.pweb.MyClinic.model.TicketStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,12 +15,15 @@ import lombok.NoArgsConstructor;
 public class Ticket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long clientId;
     private Long employeeId;
     private Long productId;
     private String creationDate;
-    private String period;
+    private String reserved_time;
     private Long paymentId;
+
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status;
 }

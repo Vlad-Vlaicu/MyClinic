@@ -1,16 +1,14 @@
 package com.pweb.MyClinic.model.db;
 
 import com.pweb.MyClinic.model.PersonalData;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 
+import static jakarta.persistence.GenerationType.AUTO;
 import static org.hibernate.type.SqlTypes.JSON;
 
 @Data
@@ -21,7 +19,7 @@ import static org.hibernate.type.SqlTypes.JSON;
 public class ClientInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = AUTO)
     private Long id;
     private Integer userId;
     @JdbcTypeCode(JSON)

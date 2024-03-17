@@ -18,7 +18,7 @@ import static org.hibernate.type.SqlTypes.JSON;
 public class PaymentInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long clientId;
     private String executionTime;
