@@ -1,9 +1,11 @@
 package com.pweb.MyClinic.service.workflow;
 
+import com.pweb.MyClinic.mappers.AccountInfoMapper;
 import com.pweb.MyClinic.service.company.ClientInfoService;
 import com.pweb.MyClinic.service.exception.ServiceException;
 import com.pweb.MyClinic.service.security.JwtService;
 import com.pweb.MyClinic.service.security.UserService;
+import com.pweb.model.generated.AccountInfo;
 import com.pweb.model.generated.AuthResponse;
 import com.pweb.model.generated.LoginRequest;
 import com.pweb.model.generated.RegisterRequest;
@@ -58,5 +60,12 @@ public class WorkflowService {
 
         var loginRequest = new LoginRequest().email(request.getEmail()).password(request.getPassword());
         return login(loginRequest);
+    }
+
+    public AccountInfo getAccountInfo(){
+        var username = jwtService.extractUsername();
+        var user = userService.loadUserByUsername(username);
+        var clientInfo = clientInfoService.getAccountInfo(user.getId());
+        return AccountInfoMapper.INSTANCE.mapClientInfoToAccountInfo(clientInfo);
     }
 }

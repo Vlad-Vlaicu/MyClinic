@@ -14,4 +14,8 @@ public class ClientInfoService {
     public void saveClientInfo (ClientInfo clientInfo){
         repository.save(clientInfo);
     }
+
+    public ClientInfo getAccountInfo (Integer user_id){
+        return repository.getClientInfoByUserId(user_id);
+    }
 }

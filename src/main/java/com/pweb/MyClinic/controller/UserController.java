@@ -2,6 +2,7 @@ package com.pweb.MyClinic.controller;
 
 import com.pweb.MyClinic.service.workflow.WorkflowService;
 import com.pweb.controller.generated.MyClinicApi;
+import com.pweb.model.generated.AccountInfo;
 import com.pweb.model.generated.AuthResponse;
 import com.pweb.model.generated.LoginRequest;
 import com.pweb.model.generated.RegisterRequest;
@@ -25,6 +26,11 @@ public class UserController implements MyClinicApi {
 
     public ResponseEntity<AuthResponse> registerUser (@RequestBody RegisterRequest request){
         var response = workflowService.registerUser(request);
+        return ok(response);
+    }
+
+    public ResponseEntity<AccountInfo> getAccountData(){
+        var response = workflowService.getAccountInfo();
         return ok(response);
     }
 }

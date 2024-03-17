@@ -7,6 +7,7 @@ import com.pweb.MyClinic.config.properties.JwtProperties;
 import com.pweb.MyClinic.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -51,6 +52,10 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, "username").asString();
+    }
+
+    public String extractUsername(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     public Date extractExpiration(String token) {
