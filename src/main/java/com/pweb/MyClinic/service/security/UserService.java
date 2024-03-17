@@ -26,8 +26,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }
 
-    public void addUser(User userInfo) {
+    public User addUser(User userInfo) {
         userInfo.setPassword(encode(userInfo.getPassword()));
-        repository.save(userInfo);
+        return repository.save(userInfo);
     }
 }

@@ -124,6 +124,7 @@ public class DataSourceConfig {
         var hc = new HikariConfig();
         hc.setRegisterMbeans(false);
         hc.setAllowPoolSuspension(true);
+        hc.setAutoCommit(false);
         return hc;
     }
 

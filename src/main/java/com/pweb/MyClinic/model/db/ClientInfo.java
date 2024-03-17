@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 
-import static jakarta.persistence.GenerationType.AUTO;
+import static jakarta.persistence.GenerationType.*;
 import static org.hibernate.type.SqlTypes.JSON;
 
 @Data
@@ -19,10 +19,16 @@ import static org.hibernate.type.SqlTypes.JSON;
 public class ClientInfo {
 
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = TABLE)
     private Long id;
+
+    @Column(name = "user_id")
     private Integer userId;
+
     @JdbcTypeCode(JSON)
+    @Column(name = "personal_data")
     private PersonalData personalData;
+
+    @Column(name = "creation_date")
     private String creationDate;
 }

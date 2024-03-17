@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 
-import static jakarta.persistence.GenerationType.AUTO;
+import static jakarta.persistence.GenerationType.TABLE;
 import static org.hibernate.type.SqlTypes.JSON;
 
 @Data
@@ -21,7 +21,7 @@ import static org.hibernate.type.SqlTypes.JSON;
 public class EmployeeInfo {
 
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = TABLE)
     private Long id;
     private Integer userId;
     @JdbcTypeCode(JSON)
