@@ -1,15 +1,12 @@
 package com.pweb.MyClinic.model.db;
 
 import com.pweb.MyClinic.model.PaymentStatus;
-import com.pweb.MyClinic.model.PaymentType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
-
-import java.util.List;
 
 import static org.hibernate.type.SqlTypes.JSON;
 
@@ -27,11 +24,8 @@ public class PaymentInfo {
     private String executionTime;
 
     @JdbcTypeCode(JSON)
-    private List<ProductInfo> products;
-
-    @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
-
+    private ProductInfo product;
+    private String paymentType;
     private String additionalData;
 
     @Enumerated(EnumType.STRING)

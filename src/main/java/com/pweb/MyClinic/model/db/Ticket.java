@@ -20,7 +20,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private Long clientId;
-    private Integer employeeId;
+    private Long employeeId;
     private Long productId;
     private String creationDate;
     private String period;

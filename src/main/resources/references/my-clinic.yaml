@@ -56,29 +56,6 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
-  /api/v1/admin/addEmployee:
-    post:
-      summary: Create a new employee account
-      description: This API is called to add a new Employee account
-      operationId: addEmployee
-      tags:
-        - my-clinic
-      security:
-        - bearerAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        201:
-          description: created
-        400:
-          $ref: '#/components/responses/ClientError'
-        500:
-          $ref: '#/components/responses/ServerError'
-
   /api/v1/my-clinic/getAccountInfo:
     get:
       summary: Get account info
@@ -100,6 +77,117 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
+  /api/v1/my-clinic/createTicket:
+    post:
+      summary: Create a ticket
+      description: This API is called when a client want to create a new ticket
+      operationId: createTicket
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic/getTicket/{ticketId}:
+    get:
+      summary: API to get Ticket by Id
+      description: This API fetches the ticket with the id ticketId
+      operationId: getTicketWithId
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: ticketId
+          schema:
+            type: number
+          required: true
+          description: The ticket id
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketInfo'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic/getPaymentInfo/{paymentId}:
+    get:
+      summary: API to get Ticket by Id
+      description: This API fetches the ticket with the id ticketId
+      operationId: getPaymentWithId
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: paymentId
+          schema:
+            type: number
+          required: true
+          description: The payment id
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInfo'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic/payTicket/{ticketId}:
+    post:
+      summary: API to pay the ticket
+      description: This API receives as parameter the ticket id and executes the payment
+      operationId: payTicket
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: ticketId
+          schema:
+            type: number
+          required: true
+          description: The ticket id
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInfo'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
 components:
   schemas:
     LoginRequest:
@@ -114,6 +202,9 @@ components:
           type: string
           description: User's password
           example: admin1234
+      required:
+        - email
+        - password
 
     RegisterRequest:
       type: object
@@ -131,6 +222,38 @@ components:
           type: string
           description: User's password
           example: admin1234
+        phoneNumber:
+          type: string
+          description: User's phone number
+          example: 07208381237
+        cnp:
+          type: string
+          description: User's cnp
+          example: 5010118283948
+        birthday:
+          type: string
+          description: User's birthday
+          example: 18.04.1954
+      required:
+        - email
+        - password
+        - phoneNumber
+        - cnp
+        - name
+
+    CreateTicketRequest:
+      type: object
+      properties:
+        productId:
+          type: number
+        period:
+          type: string
+        paymentType:
+          $ref: '#/components/schemas/PaymentType'
+      required:
+        - productId
+        - period
+        - paymentType
 
     AuthResponse:
       type: object
@@ -151,6 +274,70 @@ components:
           type: string
         creation_date:
           type: string
+        phoneNumber:
+          type: string
+        cnp:
+          type: string
+        birthday:
+          type: string
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketInfo'
+
+    TicketInfo:
+      type: object
+      properties:
+        id:
+          type: number
+        productId:
+          type: number
+        creationDate:
+          type: string
+        period:
+          type: string
+        paymentId:
+          type: number
+        product:
+          $ref: '#/components/schemas/ProductInfo'
+        ticketStatus:
+          type: string
+
+    ProductInfo:
+      type: object
+      properties:
+        productId:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        productCategory:
+          type: string
+
+    PaymentInfo:
+      type: object
+      properties:
+        id:
+          type: number
+        executionDate:
+          type: string
+        productId:
+          type: number
+        paymentType:
+          $ref: '#/components/schemas/PaymentType'
+        paymentStatus:
+          type: string
+        additionalData:
+          type: string
+
+    PaymentType:
+      type: object
+      enum:
+        - CNAS
+        - IN_PERSON
 
     ErrorResponse:
       type: object
