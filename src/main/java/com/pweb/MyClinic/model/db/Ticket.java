@@ -17,13 +17,26 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
+
+    @Column(name = "client_id")
     private Long clientId;
+
+    @Column(name = "employee_id")
     private Long employeeId;
+
+    @Column(name = "product_id")
     private Long productId;
+
+    @Column(name = "creation_date")
     private String creationDate;
-    private String reserved_time;
+
+    @Column(name = "reserved_time")
+    private String reservedTime;
+
+    @Column(name = "payment_id")
     private Long paymentId;
 
     @Enumerated(EnumType.STRING)
-    private TicketStatus status;
+    @Column(name = "status")
+    private TicketStatus ticketStatus;
 }

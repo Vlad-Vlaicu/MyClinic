@@ -15,7 +15,7 @@ public class ClientInfoService {
         repository.save(clientInfo);
     }
 
-    public ClientInfo getAccountInfo (Integer user_id){
-        return repository.getClientInfoByUserId(user_id);
+    public ClientInfo getAccountInfo (Integer userId){
+        return repository.getClientInfoByUserId(userId);
     }
 }

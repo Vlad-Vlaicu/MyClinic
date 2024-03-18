@@ -298,8 +298,6 @@ components:
           type: string
         paymentId:
           type: number
-        product:
-          $ref: '#/components/schemas/ProductInfo'
         ticketStatus:
           type: string
 
@@ -334,7 +332,7 @@ components:
           type: string
 
     PaymentType:
-      type: object
+      type: string
       enum:
         - CNAS
         - IN_PERSON

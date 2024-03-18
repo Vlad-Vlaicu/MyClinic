@@ -1,12 +1,12 @@
 CREATE TABLE tickets (
 
                               id               NUMERIC PRIMARY KEY,
-                              clientId         INTEGER NOT NULL REFERENCES users (id),
-                              employeeId       INTEGER REFERENCES users (id),
-                              productId        NUMERIC NOT NULL REFERENCES product_info (id),
-                              creationDate     VARCHAR NOT NULL,
+                              client_id         INTEGER NOT NULL REFERENCES users (id),
+                              employee_id       INTEGER REFERENCES users (id),
+                              product_id        NUMERIC NOT NULL REFERENCES product_info (id),
+                              creation_date     VARCHAR NOT NULL,
                               reserved_time    VARCHAR NOT NULL,
-                              paymentId        NUMERIC NOT NULL REFERENCES payment_info (id),
+                              payment_id        NUMERIC NOT NULL REFERENCES payment_info (id),
                               status           VARCHAR NOT NULL
 
 );
