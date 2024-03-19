@@ -209,6 +209,26 @@
 							<skipOverwrite>false</skipOverwrite>
 						</configuration>
 					</execution>
+					<execution>
+						<id>my-clinic-admin</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>
+								${project.basedir}/src/main/resources/references/my-clinic-admin.yaml
+							</inputSpec>
+							<output>${project.build.directory}/generated-sources/pweb</output>
+							<generatorName>spring</generatorName>
+							<configOptions>
+								<library>spring-boot</library>
+								<useSpringBott3>true</useSpringBott3>
+								<apiPackage>com.pweb.controller.generated</apiPackage>
+								<modelPackage>com.pweb.model.generated</modelPackage>
+							</configOptions>
+							<skipOverwrite>false</skipOverwrite>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

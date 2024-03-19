@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: My Clinic Admin
+  description: My Clinic Admin APIs
+  version: 1.0.0
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/my-clinic-admin/hello:
+    get:
+      summary: Receive Hello Admin
+      description: This API provides hello message for admin user
+      operationId: hello
+      tags:
+        - my-clinic-admin
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-admin/addEmployee:
+    post:
+      summary: Create a new employee account
+      description: This API is called to add a new Employee account
+      operationId: addEmployee
+      tags:
+        - my-clinic-admin
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddEmployeeRequest'
+      responses:
+        201:
+          description: created
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+
+    AddEmployeeRequest:
+      type: object
+      description: Register new user data
+      properties:
+        name:
+          type: string
+          description: User's name
+          example: Vlad
+        email:
+          type: string
+          description: User's email
+          example: email@email.com
+        password:
+          type: string
+          description: User's password
+          example: admin1234
+        phoneNumber:
+          type: string
+          description: User's phone number
+          example: 07208381237
+        cnp:
+          type: string
+          description: User's cnp
+          example: 5010118283948
+        birthday:
+          type: string
+          description: User's birthday
+          example: 18.04.1954
+        salary:
+          type: integer
+          description: employee base salary
+          example: 3400
+        employeeType:
+          $ref: '#/components/schemas/EmployeeType'
+      required:
+        - email
+        - password
+        - phoneNumber
+        - cnp
+        - name
+        - salary
+
+    EmployeeType:
+      type: string
+      enum:
+        - MEDIC
+        - FRONT_OFFICE
+
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: error code
+          example: TECHNICAL_ERROR
+        message:
+          type: string
+          description: Free-form text message describing the error condition
+          example: Input parameters validation failed
+
+  responses:
+    ClientError:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

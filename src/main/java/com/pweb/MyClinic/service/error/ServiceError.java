@@ -9,6 +9,7 @@ public enum ServiceError {
 
     LOGIN_FAILED("Username or password are incorrect"),
     REGISTER_FAILED( "Registering a new user has failed"),
-    TICKET_CREATION_FAILED("The creation of ticket failed");
+    TICKET_CREATION_FAILED("The creation of ticket failed"),
+    CREATE_EMPLOYEE_FAILED("The creation of a new employee failed");
     private final String message;
 }

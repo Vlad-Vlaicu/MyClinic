@@ -1,0 +1,1 @@
+ALTER TABLE employee_info ADD COLUMN base_salary INTEGER;

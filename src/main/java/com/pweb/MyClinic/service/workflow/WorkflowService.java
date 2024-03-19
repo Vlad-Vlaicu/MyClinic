@@ -4,10 +4,7 @@ import com.pweb.MyClinic.mappers.AccountInfoMapper;
 import com.pweb.MyClinic.mappers.TicketInfoMapper;
 import com.pweb.MyClinic.model.db.Product;
 import com.pweb.MyClinic.model.db.Ticket;
-import com.pweb.MyClinic.service.company.ClientInfoService;
-import com.pweb.MyClinic.service.company.PaymentService;
-import com.pweb.MyClinic.service.company.ProductService;
-import com.pweb.MyClinic.service.company.TicketService;
+import com.pweb.MyClinic.service.company.*;
 import com.pweb.MyClinic.service.exception.ServiceException;
 import com.pweb.MyClinic.service.security.JwtService;
 import com.pweb.MyClinic.service.security.UserService;
@@ -33,6 +30,7 @@ public class WorkflowService {
     private final JwtService jwtService;
     private final UserService userService;
     private final ClientInfoService clientInfoService;
+    private final EmployeeInfoService employeeInfoService;
     private final ProductService productService;
     private final PaymentService paymentService;
     private final TicketService ticketService;
@@ -92,6 +90,20 @@ public class WorkflowService {
             return savedTicket.getId().toString();
         } catch (Exception e) {
             throw new ServiceException(TICKET_CREATION_FAILED);
+        }
+    }
+
+    @Transactional
+    public void addEmployee(AddEmployeeRequest request){
+        var userInfo = generateEmployeeUser(request);
+
+        try {
+            var savedUser = userService.addUser(userInfo);
+            var employeeInfo = generateEmployeeInfo(savedUser.getId(), request);
+            employeeInfoService.saveEmployeeInfo(employeeInfo);
+
+        } catch (Exception e) {
+            throw new ServiceException(CREATE_EMPLOYEE_FAILED);
         }
     }
 
