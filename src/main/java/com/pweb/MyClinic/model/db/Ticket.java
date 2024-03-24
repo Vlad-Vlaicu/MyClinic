@@ -39,4 +39,7 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TicketStatus ticketStatus;
+
+    @Column(name = "doctor_id")
+    private Long doctorId;
 }

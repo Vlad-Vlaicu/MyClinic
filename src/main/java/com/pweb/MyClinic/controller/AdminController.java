@@ -4,7 +4,6 @@ import com.pweb.MyClinic.service.exception.ServiceException;
 import com.pweb.MyClinic.service.workflow.WorkflowService;
 import com.pweb.controller.generated.MyClinicAdminApi;
 import com.pweb.model.generated.AddEmployeeRequest;
-import io.jsonwebtoken.io.SerialException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,6 @@ public class AdminController implements MyClinicAdminApi {
         } catch (Exception e) {
             throw new ServiceException(CREATE_EMPLOYEE_FAILED);
         }
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

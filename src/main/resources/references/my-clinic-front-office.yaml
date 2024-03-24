@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: My Clinic Front-Office
+  description: My Clinic Front-Office APIs
+  version: 1.0.0
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/my-clinic-front-office/hello:
+    get:
+      summary: Receive Hello Admin
+      description: This API provides hello message for admin user
+      operationId: hello
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: string
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-front-office/claimTicket:
+    get:
+      summary: claim the oldest ticket from the unclaimed tickets
+      description: This API is called to claim the oldest ticket from the unclaimed tickets
+      operationId: claimTicket
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketInfo'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-front-office/completeProcessing/{ticketId}:
+    post:
+      summary: API to process a ticket
+      description: This API receives as parameter the ticket id and in body the processed ticket data and finished the ticket processing
+      operationId: completeProcessing
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: ticketId
+          schema:
+            type: number
+          required: true
+          description: The ticket id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketInfo'
+      responses:
+        200:
+          description: ok
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-front-office/cancelProcessing/{ticketId}:
+    post:
+      summary: API to cancel the processing of a ticket
+      description: This API receives as parameter the ticket id and cancels the processing of the the ticket
+      operationId: cancelProcessing
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: ticketId
+          schema:
+            type: number
+          required: true
+          description: The ticket id
+      responses:
+        200:
+          description: ok
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-front-office/cancelTicket/{ticketId}:
+    post:
+      summary: API to cancel a ticket
+      description: This API receives as parameter the ticket id and cancels it
+      operationId: cancelTicket
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: ticketId
+          schema:
+            type: number
+          required: true
+          description: The ticket id
+      responses:
+        200:
+          description: ok
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-front-office/getTicketById/{ticketId}:
+    get:
+      summary: get a ticket by id
+      description: This API is called to get a ticket by its id
+      operationId: getTicketById
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: ticketId
+          schema:
+            type: number
+          required: true
+          description: The ticket id
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketInfo'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /api/v1/my-clinic-front-office/getMyTickets:
+    get:
+      summary: get a ticket by id
+      description: This API is called to get all employee tickets
+      operationId: getTickets
+      tags:
+        - my-clinic-front-office
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tickets'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    TicketInfo:
+      type: object
+      properties:
+        id:
+          type: number
+        productId:
+          type: number
+        creationDate:
+          type: string
+        period:
+          type: string
+        paymentId:
+          type: number
+        ticketStatus:
+          type: string
+        doctorId:
+          type: number
+
+    Tickets:
+      type: array
+      items:
+        $ref: '#/components/schemas/TicketInfo'
+
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          description: error code
+          example: TECHNICAL_ERROR
+        message:
+          type: string
+          description: Free-form text message describing the error condition
+          example: Input parameters validation failed
+
+  responses:
+    ClientError:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

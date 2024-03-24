@@ -13,6 +13,8 @@ paths:
       operationId: hello
       tags:
         - my-clinic-admin
+      security:
+        - bearerAuth: [ ]
       responses:
         200:
           description: ok

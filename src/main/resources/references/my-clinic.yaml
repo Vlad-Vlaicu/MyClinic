@@ -300,6 +300,8 @@ components:
           type: number
         ticketStatus:
           type: string
+        doctorId:
+          type: number
 
     ProductInfo:
       type: object

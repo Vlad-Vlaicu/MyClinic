@@ -1,0 +1,1 @@
+ALTER TABLE tickets ADD COLUMN doctor_id INTEGER REFERENCES users (id);

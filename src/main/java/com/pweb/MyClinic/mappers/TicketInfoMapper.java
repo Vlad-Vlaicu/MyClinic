@@ -13,4 +13,7 @@ public interface TicketInfoMapper {
 
     @Mapping(source = "reservedTime", target = "period")
     TicketInfo mapTicketToTicketInfo(Ticket source);
+
+    @Mapping(source = "period", target = "reservedTime")
+    Ticket mapTicketInfoToTicket(TicketInfo source);
 }

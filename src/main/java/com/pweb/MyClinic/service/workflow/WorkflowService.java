@@ -2,6 +2,7 @@ package com.pweb.MyClinic.service.workflow;
 
 import com.pweb.MyClinic.mappers.AccountInfoMapper;
 import com.pweb.MyClinic.mappers.TicketInfoMapper;
+import com.pweb.MyClinic.model.TicketStatus;
 import com.pweb.MyClinic.model.db.Product;
 import com.pweb.MyClinic.model.db.Ticket;
 import com.pweb.MyClinic.service.company.*;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.pweb.MyClinic.helper.UserHelper.*;
+import static com.pweb.MyClinic.model.Role.MEDIC;
+import static com.pweb.MyClinic.model.TicketStatus.CREATED;
+import static com.pweb.MyClinic.model.TicketStatus.IN_PROGRESS;
 import static com.pweb.MyClinic.service.error.ServiceError.*;
 import static java.math.RoundingMode.HALF_UP;
 
@@ -119,5 +123,52 @@ public class WorkflowService {
 
     public List<Ticket> getUserTickets (Integer userId){
         return ticketService.getUserTickets((long) userId);
+    }
+
+    public void cancelProcessing (Long ticketId){
+        ticketService.releaseTicket(ticketId, CREATED);
+    }
+
+    public void cancelTicket(Long ticketId){
+        ticketService.cancelTicket(ticketId, getUserId().longValue());
+    }
+
+    public TicketInfo claimTicket(){
+        return TicketInfoMapper.INSTANCE.mapTicketToTicketInfo(ticketService.claimTicket(Long.parseLong(getUserId().toString())));
+    }
+
+    public void completeProcessing(Long ticketId, TicketInfo ticketInfo){
+        if (ticketId != ticketInfo.getId().longValue()){
+            throw new ServiceException(TICKET_IDS_DONT_MATCH);
+        }
+
+        var doctorUser = userService.getUserById(ticketInfo.getDoctorId().longValue());
+        if (doctorUser.isEmpty() || !doctorUser.get().getRole().equals(MEDIC)){
+            throw new ServiceException(DOCTOR_SELECTED_IS_NOT_MEDIC);
+        }
+
+        var ticket = ticketService.getTicketById(ticketId);
+        ticket.setEmployeeId(getUserId().longValue());
+        ticket.setTicketStatus(IN_PROGRESS);
+        ticket.setReservedTime(ticketInfo.getPeriod());
+        ticket.setProductId(ticketInfo.getProductId().longValue());
+        ticket.setDoctorId(ticketInfo.getDoctorId().longValue());
+
+        ticketService.updateTicket(ticket);
+    }
+
+    public TicketInfo getTicketById (Long ticketId){
+        var ticket = ticketService.getTicketById(ticketId);
+        return TicketInfoMapper.INSTANCE.mapTicketToTicketInfo(ticket);
+    }
+
+    public List<TicketInfo> getTicketsByEmployee(){
+        var tickets = ticketService.getEmployeeManagedTickets(getUserId().longValue());
+        return tickets.stream().map(TicketInfoMapper.INSTANCE::mapTicketToTicketInfo).toList();
+    }
+
+    public List<TicketInfo> getTicketsByDoctorWithStatus(TicketStatus status){
+        var tickets = ticketService.getDoctorTicketsWithTicketStatus(getUserId().longValue(), status);
+        return tickets.stream().map(TicketInfoMapper.INSTANCE::mapTicketToTicketInfo).toList();
     }
 }

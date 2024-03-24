@@ -30,4 +30,8 @@ public class UserService implements UserDetailsService {
         userInfo.setPassword(encode(userInfo.getPassword()));
         return repository.save(userInfo);
     }
+
+    public Optional<User> getUserById(Long userId) {
+        return repository.getUserById(userId.intValue());
+    }
 }
