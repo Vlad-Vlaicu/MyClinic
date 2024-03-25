@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.pweb.MyClinic.model.TicketStatus.*;
-import static com.pweb.MyClinic.service.error.ServiceError.NO_TICKETS_FOUND;
+import static com.pweb.MyClinic.service.error.ServiceError.*;
 
 @Service
 @Slf4j
@@ -70,6 +70,11 @@ public class TicketService {
             throw new ServiceException(NO_TICKETS_FOUND);
         }
 
+        if (ticket.get().getTicketStatus() != IN_PROGRESS){
+            log.info("ticket status expected to be in progress but was {}", ticket.get().getTicketStatus().toString());
+            throw new ServiceException(TICKET_IS_NOT_ELIGIBLE_TO_BE_RESOLVED);
+        }
+
         ticket.get().setTicketStatus(DONE);
         repository.save(ticket.get());
         log.info("Ticket with id {} was finished", ticketId);
@@ -81,7 +86,9 @@ public class TicketService {
         if (ticket.isEmpty()){
             throw new ServiceException(NO_TICKETS_FOUND);
         }
-
+        if (ticket.get().getTicketStatus() == DONE){
+            throw new ServiceException(TICKET_IS_ALREADY_DONE);
+        }
         ticket.get().setTicketStatus(CANCELLED);
         ticket.get().setEmployeeId(employeeId);
         repository.save(ticket.get());
@@ -98,6 +105,10 @@ public class TicketService {
 
     public List<Ticket> getEmployeeManagedTickets(Long employeeId){
         return repository.getTicketsByEmployeeId(employeeId);
+    }
+
+    public List<Ticket> getDoctorAssignedTickets(Long doctorId){
+        return repository.getTicketsByDoctorId(doctorId);
     }
 
     public List<Ticket> getDoctorTicketsWithTicketStatus(Long employeeId, TicketStatus status){

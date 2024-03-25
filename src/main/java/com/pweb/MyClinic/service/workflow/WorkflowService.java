@@ -1,6 +1,7 @@
 package com.pweb.MyClinic.service.workflow;
 
 import com.pweb.MyClinic.mappers.AccountInfoMapper;
+import com.pweb.MyClinic.mappers.PaymentInfoMapper;
 import com.pweb.MyClinic.mappers.TicketInfoMapper;
 import com.pweb.MyClinic.model.TicketStatus;
 import com.pweb.MyClinic.model.db.Product;
@@ -11,6 +12,7 @@ import com.pweb.MyClinic.service.security.JwtService;
 import com.pweb.MyClinic.service.security.UserService;
 import com.pweb.model.generated.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,15 +20,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
+import static com.pweb.MyClinic.helper.TimeHelper.TIME_FORMATTER;
 import static com.pweb.MyClinic.helper.UserHelper.*;
+import static com.pweb.MyClinic.model.PaymentStatus.PAID;
 import static com.pweb.MyClinic.model.Role.MEDIC;
-import static com.pweb.MyClinic.model.TicketStatus.CREATED;
-import static com.pweb.MyClinic.model.TicketStatus.IN_PROGRESS;
+import static com.pweb.MyClinic.model.TicketStatus.*;
 import static com.pweb.MyClinic.service.error.ServiceError.*;
+import static com.pweb.model.generated.PaymentType.CNAS;
 import static java.math.RoundingMode.HALF_UP;
+import static java.time.LocalDateTime.now;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class WorkflowService {
 
@@ -79,6 +86,10 @@ public class WorkflowService {
         return accountInfo;
     }
 
+    public List<TicketInfo> getUserTickets(){
+        return getUserTickets(getUserId()).stream().map(TicketInfoMapper.INSTANCE::mapTicketToTicketInfo).toList();
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public String createTicket(CreateTicketRequest request) {
         var ticket = generateTicket(request);
@@ -95,6 +106,22 @@ public class WorkflowService {
         } catch (Exception e) {
             throw new ServiceException(TICKET_CREATION_FAILED);
         }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public com.pweb.model.generated.PaymentInfo payTicket(Long ticketId){
+        var ticket = ticketService.getTicketById(ticketId);
+        var paymentId = ticket.getPaymentId();
+        var payment = paymentService.getPaymentInfo(paymentId);
+
+        if(Objects.equals(payment.getPaymentType(), CNAS.toString())){
+            throw new ServiceException(TICKET_PAYMENT_ERROR_WRONG_PAYMENT_TYPE);
+        }
+
+        payment.setStatus(PAID);
+        payment.setExecutionTime(now().format(TIME_FORMATTER));
+        paymentService.savePayment(payment);
+        return PaymentInfoMapper.INSTANCE.paymentInfoDBToPaymentInfoGen(payment);
     }
 
     @Transactional
@@ -133,6 +160,10 @@ public class WorkflowService {
         ticketService.cancelTicket(ticketId, getUserId().longValue());
     }
 
+    public void finishTicket(Long ticketId){
+        ticketService.finishTicket(ticketId);
+    }
+
     public TicketInfo claimTicket(){
         return TicketInfoMapper.INSTANCE.mapTicketToTicketInfo(ticketService.claimTicket(Long.parseLong(getUserId().toString())));
     }
@@ -148,6 +179,16 @@ public class WorkflowService {
         }
 
         var ticket = ticketService.getTicketById(ticketId);
+        if (ticket.getTicketStatus() != PROCESSING){
+            log.info("Ticket was expected to have status processing, but was {}", ticket.getTicketStatus().toString());
+            throw new ServiceException(INVALID_TICKET_STATUS);
+        }
+
+        if (ticket.getEmployeeId() != getUserId().longValue()){
+            log.info("Ticket is already being processed");
+            throw new ServiceException(TICKET_IS_ALREADY_BEING_PROCESSED);
+        }
+
         ticket.setEmployeeId(getUserId().longValue());
         ticket.setTicketStatus(IN_PROGRESS);
         ticket.setReservedTime(ticketInfo.getPeriod());
@@ -162,13 +203,34 @@ public class WorkflowService {
         return TicketInfoMapper.INSTANCE.mapTicketToTicketInfo(ticket);
     }
 
+    public TicketInfo getUserTicketById(Long ticketId){
+        var ticket = ticketService.getTicketById(ticketId);
+        if (ticket.getClientId() != getUserId().longValue()){
+            throw new ServiceException(NO_TICKETS_FOUND);
+        }
+        return TicketInfoMapper.INSTANCE.mapTicketToTicketInfo(ticket);
+    }
+
     public List<TicketInfo> getTicketsByEmployee(){
         var tickets = ticketService.getEmployeeManagedTickets(getUserId().longValue());
+        return tickets.stream().map(TicketInfoMapper.INSTANCE::mapTicketToTicketInfo).toList();
+    }
+
+    public List<TicketInfo> getTicketsByDoctor(){
+        var tickets = ticketService.getDoctorAssignedTickets(getUserId().longValue());
         return tickets.stream().map(TicketInfoMapper.INSTANCE::mapTicketToTicketInfo).toList();
     }
 
     public List<TicketInfo> getTicketsByDoctorWithStatus(TicketStatus status){
         var tickets = ticketService.getDoctorTicketsWithTicketStatus(getUserId().longValue(), status);
         return tickets.stream().map(TicketInfoMapper.INSTANCE::mapTicketToTicketInfo).toList();
+    }
+
+    public com.pweb.model.generated.PaymentInfo getPaymentById(Long paymentId){
+        var payment = paymentService.getPaymentInfo(paymentId);
+        if (payment.getClientId() != getUserId().longValue()){
+            throw new ServiceException(NO_PAYMENT_INFO_FOUND);
+        }
+        return PaymentInfoMapper.INSTANCE.paymentInfoDBToPaymentInfoGen(payment);
     }
 }

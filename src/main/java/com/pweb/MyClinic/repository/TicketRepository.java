@@ -15,4 +15,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Optional<Ticket> getTicketsById(Long id);
     List<Ticket> getTicketsByEmployeeId(Long employeeId);
     List<Ticket> getTicketsByDoctorIdAndTicketStatus(Long doctorId, TicketStatus status);
+    List<Ticket> getTicketsByDoctorId(Long doctorId);
 }

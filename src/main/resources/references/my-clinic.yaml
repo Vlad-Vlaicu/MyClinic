@@ -104,6 +104,27 @@ paths:
         500:
           $ref: '#/components/responses/ServerError'
 
+  /api/v1/my-clinic/getMyTickets:
+    get:
+      summary: get all user tickets
+      description: This API is called to get all user tickets
+      operationId: getTickets
+      tags:
+        - my-clinic
+      security:
+        - bearerAuth: [ ]
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tickets'
+        400:
+          $ref: '#/components/responses/ClientError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
   /api/v1/my-clinic/getTicket/{ticketId}:
     get:
       summary: API to get Ticket by Id
@@ -302,6 +323,11 @@ components:
           type: string
         doctorId:
           type: number
+
+    Tickets:
+      type: array
+      items:
+        $ref: '#/components/schemas/TicketInfo'
 
     ProductInfo:
       type: object
